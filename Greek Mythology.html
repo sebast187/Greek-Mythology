@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mythological Pokedex</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #333;
+            color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .pokedex-container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            max-height: 700px;
+            background-color: #c0392b; /* Pokedex Red */
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 5px solid #2c3e50; /* Dark blue border */
+        }
+
+        .list-panel {
+            width: 35%;
+            background-color: #ecf0f1; /* Light grey */
+            padding: 15px;
+            overflow-y: auto;
+            border-right: 5px solid #2c3e50;
+        }
+
+        .list-panel h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .list-item {
+            background-color: #3498db; /* Blue */
+            color: white;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .list-item:hover {
+            background-color: #2980b9; /* Darker Blue */
+            transform: scale(1.03);
+        }
+        
+        .list-item.active {
+            background-color: #e67e22; /* Orange for active */
+            box-shadow: 0 0 10px #e67e22;
+        }
+
+        .detail-panel {
+            width: 65%;
+            background-color: #2c3e50; /* Dark Blue Screen */
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Animation for panel content */
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .detail-panel.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .detail-panel-placeholder {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .detail-panel-placeholder .big-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #7f8c8d;
+        }
+
+        .god-image-container {
+            width: 180px;
+            height: 180px;
+            background-color: #34495e; /* Slightly lighter blue */
+            border: 3px solid #7f8c8d; /* Grey border */
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .god-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 7px; /* Inner radius */
+        }
+
+        .god-name {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e67e22; /* Orange */
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .god-roman-name {
+            font-size: 1.1em;
+            font-style: italic;
+            color: #bdc3c7; /* Light grey */
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .god-title {
+            font-size: 1.3em;
+            color: #1abc9c; /* Turquoise */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .info-section {
+            background-color: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .info-section h3 {
+            color: #1abc9c;
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #7f8c8d;
+            padding-bottom: 5px;
+        }
+
+        .info-section p, .info-section ul {
+            margin: 5px 0;
+            color: #ecf0f1;
+            font-size: 0.95em;
+        }
+        .info-section strong {
+            color: #bdc3c7;
+        }
+
+        .info-section ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .info-section ul li {
+            margin-bottom: 5px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #555;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="pokedex-container">
+        <div class="list-panel" id="listPanel">
+            <h2>Pantheon Index</h2>
+            <!-- God list will be populated here by JS -->
+        </div>
+        <div class="detail-panel" id="detailPanel">
+            <!-- Placeholder until a god is selected -->
+            <div class="detail-panel-placeholder" id="detailPlaceholder">
+                <div class="big-icon">🏛️</div>
+                <p>Select a figure from the Pantheon Index to view details.</p>
+            </div>
+            <!-- God details will be populated here by JS -->
+            <div id="godContent" style="display: none; width: 100%; text-align: center;">
+                <div class="god-image-container">
+                    <img src="" alt="Image of the deity" id="godImage" class="god-image">
+                </div>
+                <h1 id="godName" class="god-name"></h1>
+                <p id="godRomanName" class="god-roman-name"></p>
+                <h2 id="godTitle" class="god-title"></h2>
+
+                <div class="info-section">
+                    <h3>Family</h3>
+                    <p><strong>Father:</strong> <span id="godFather"></span></p>
+                    <p><strong>Mother:</strong> <span id="godMother"></span></p>
+                    <p><strong>Notable Children:</strong></p>
+                    <ul id="godChildren"></ul>
+                </div>
+
+                <div class="info-section">
+                    <h3>Facts & Myths</h3>
+                    <ul id="godFacts"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const godData = [
+            // Olympians (Greek/Roman)
+            {
+                id: "zeus",
+                name: "Zeus",
+                romanName: "Jupiter",
+                title: "King of the Gods, God of Sky and Thunder",
+                father: "Cronus",
+                mother: "Rhea",
+                children: ["Athena", "Apollo", "Artemis", "Ares", "Hephaestus", "Hermes", "Dionysus", "Heracles", "Perseus", "Helen of Troy"],
+                facts: [
+                    "Overthrew his father Cronus and the Titans.",
+                    "Wields the thunderbolt, crafted by the Cyclopes.",
+                    "Known for his numerous affairs and offspring, often tricking mortals and goddesses.",
+                    "His sacred symbols include the eagle, oak tree, and lightning bolt."
+                ],
+                image: "https://via.placeholder.com/180/FFD700/000000?Text=Zeus"
+            },
+            {
+                id: "hera",
+                name: "Hera",
+                romanName: "Juno",
+                title: "Queen of the Gods, Goddess of Marriage and Family",
+                father: "Cronus",
+                mother: "Rhea",
+                children: ["Ares", "Hephaestus", "Hebe", "Eileithyia"],
+                facts: [
+                    "Wife and sister of Zeus.",
+                    "Known for her jealousy and vengeful acts against Zeus's lovers and illegitimate children.",
+                    "Sacred animals are the peacock and the cow.",
+                    "Protector of married women."
+                ],
+                image: "https://via.placeholder.com/180/C0C0C0/000000?Text=Hera"
+            },
+            {
+                id: "poseidon",
+                name: "Poseidon",
+                romanName: "Neptune",
+                title: "God of the Sea, Earthquakes, and Horses",
+                father: "Cronus",
+                mother: "Rhea",
+                children: ["Theseus", "Triton", "Polyphemus", "Pegasus (creator)"],
+                facts: [
+                    "Brother of Zeus and Hades.",
+                    "Wields a trident, capable of shaking the earth and stirring the seas.",
+                    "Competed with Athena for patronage of Athens, which he lost.",
+                    "Created horses from sea foam."
+                ],
+                image: "https://via.placeholder.com/180/87CEEB/000000?Text=Poseidon"
+            },
+            {
+                id: "hades",
+                name: "Hades",
+                romanName: "Pluto",
+                title: "God of the Underworld and the Dead",
+                father: "Cronus",
+                mother: "Rhea",
+                children: ["Macaria", "Zagreus (Orphic tradition)", "Melinoe"],
+                facts: [
+                    "Brother of Zeus and Poseidon. Rules the realm of the dead.",
+                    "Possesses a Helm of Darkness, which grants invisibility.",
+                    "Abducted Persephone to be his queen.",
+                    "Often portrayed as grim but not necessarily evil, just stern."
+                ],
+                image: "https://via.placeholder.com/180/A9A9A9/FFFFFF?Text=Hades"
+            },
+            {
+                id: "athena",
+                name: "Athena",
+                romanName: "Minerva",
+                title: "Goddess of Wisdom, Warfare, and Crafts",
+                father: "Zeus",
+                mother: "Metis (swallowed by Zeus)",
+                children: ["None (virgin goddess, but sometimes Erichthonius an adopted/foster son)"],
+                facts: [
+                    "Born fully grown from Zeus's head.",
+                    "A virgin goddess, patron of Athens.",
+                    "Associated with the owl and the olive tree.",
+                    "Favored heroes like Odysseus and Perseus."
+                ],
+                image: "https://via.placeholder.com/180/ADD8E6/000000?Text=Athena"
+            },
+            {
+                id: "apollo",
+                name: "Apollo",
+                romanName: "Apollo",
+                title: "God of Music, Arts, Knowledge, Healing, Prophecy, and Archery",
+                father: "Zeus",
+                mother: "Leto",
+                children: ["Asclepius", "Orpheus", "Aristaeus"],
+                facts: [
+                    "Twin brother of Artemis.",
+                    "Oracle at Delphi was dedicated to him.",
+                    "Associated with the lyre, bow and arrow, and the sun (though Helios was the original sun god).",
+                    "Could bring plague with his arrows."
+                ],
+                image: "https://via.placeholder.com/180/FFFFE0/000000?Text=Apollo"
+            },
+            {
+                id: "artemis",
+                name: "Artemis",
+                romanName: "Diana",
+                title: "Goddess of the Hunt, Wilderness, Wild Animals, and Childbirth",
+                father: "Zeus",
+                mother: "Leto",
+                children: ["None (virgin goddess)"],
+                facts: [
+                    "Twin sister of Apollo.",
+                    "A virgin goddess, protector of young girls.",
+                    "Associated with the moon (though Selene was the original moon goddess), deer, and bow and arrow.",
+                    "Demanded absolute purity from her followers."
+                ],
+                image: "https://via.placeholder.com/180/90EE90/000000?Text=Artemis"
+            },
+            {
+                id: "ares",
+                name: "Ares",
+                romanName: "Mars",
+                title: "God of War, Violence, and Bloodlust",
+                father: "Zeus",
+                mother: "Hera",
+                children: ["Phobos (Fear)", "Deimos (Terror)", "Eros (with Aphrodite in some myths)", "Romulus & Remus (by Rhea Silvia, as Mars)"],
+                facts: [
+                    "Represents the brutal, chaotic aspects of war, unlike Athena who represents strategy.",
+                    "Often disliked by other gods, except Aphrodite, his lover.",
+                    "More revered by the Romans (as Mars) than the Greeks.",
+                    "His symbols include the spear, helmet, and vulture."
+                ],
+                image: "https://via.placeholder.com/180/DC143C/FFFFFF?Text=Ares"
+            },
+            {
+                id: "aphrodite",
+                name: "Aphrodite",
+                romanName: "Venus",
+                title: "Goddess of Love, Beauty, Pleasure, and Procreation",
+                father: "Uranus (sea foam from his severed genitals) or Zeus & Dione",
+                mother: "Dione (in some versions) or Sea Foam",
+                children: ["Eros (Cupid)", "Hermaphroditus", "Aeneas (by Anchises)"],
+                facts: [
+                    "Born from sea foam (aphros).",
+                    "Married to Hephaestus, but had many lovers, most famously Ares.",
+                    "Her symbols include the dove, swan, rose, and myrtle.",
+                    "Won the Judgement of Paris, leading to the Trojan War."
+                ],
+                image: "https://via.placeholder.com/180/FFC0CB/000000?Text=Aphrodite"
+            },
+            {
+                id: "hephaestus",
+                name: "Hephaestus",
+                romanName: "Vulcan",
+                title: "God of Fire, Metalworking, Blacksmiths, and Craftsmen",
+                father: "Zeus and Hera (or Hera alone)",
+                mother: "Hera",
+                children: ["Erichthonius of Athens (sometimes)", "Pandora (creator of)"],
+                facts: [
+                    "The only ugly god, and lame (crippled).",
+                    "Cast out of Olympus by Hera or Zeus.",
+                    "Crafted many famous items for the gods, including Zeus's thunderbolts and Achilles' armor.",
+                    "Married to Aphrodite, who was unfaithful."
+                ],
+                image: "https://via.placeholder.com/180/FFA500/000000?Text=Hephaestus"
+            },
+            {
+                id: "hermes",
+                name: "Hermes",
+                romanName: "Mercury",
+                title: "Messenger of the Gods, God of Trade, Thieves, Travelers, and Athletes",
+                father: "Zeus",
+                mother: "Maia (a Pleiad)",
+                children: ["Pan", "Hermaphroditus", "Autolycus"],
+                facts: [
+                    "Known for his speed and cunning; invented the lyre as an infant.",
+                    "Wears winged sandals (talaria) and a winged cap (petasos), carries a caduceus.",
+                    "Guides souls to the Underworld (psychopomp).",
+                    "Patron of merchants and tricksters."
+                ],
+                image: "https://via.placeholder.com/180/E0FFFF/000000?Text=Hermes"
+            },
+            {
+                id: "dionysus",
+                name: "Dionysus",
+                romanName: "Bacchus",
+                title: "God of Wine, Ecstasy, Festivals, and Theatre",
+                father: "Zeus",
+                mother: "Semele (a mortal princess)",
+                children: ["Oenopion", "Staphylus", "Priapus (sometimes)"],
+                facts: [
+                    "Born from Zeus's thigh after his mortal mother Semele was incinerated.",
+                    "Associated with wild, ecstatic rituals (Bacchanalia).",
+                    "His followers include Maenads (wild women) and Satyrs.",
+                    "Patron of theatre."
+                ],
+                image: "https://via.placeholder.com/180/DA70D6/000000?Text=Dionysus"
+            },
+            // Demigods & Heroes
+            {
+                id: "heracles",
+                name: "Heracles",
+                romanName: "Hercules",
+                title: "Divine Hero, Symbol of Strength and Courage",
+                father: "Zeus",
+                mother: "Alcmene (a mortal woman)",
+                children: ["Many, including Telephus, Hyllus, Alexiares, Anicetus"],
+                facts: [
+                    "Famous for his incredible strength and the Twelve Labors.",
+                    "Hated by Hera, who tried to kill him multiple times.",
+                    "Achieved immortality and a place on Olympus after his death.",
+                    "A popular figure throughout the ancient world."
+                ],
+                image: "https://via.placeholder.com/180/B8860B/FFFFFF?Text=Heracles"
+            },
+            {
+                id: "perseus",
+                name: "Perseus",
+                romanName: "Perseus",
+                title: "Hero, Slayer of Medusa",
+                father: "Zeus (as a golden shower)",
+                mother: "Danaë (a mortal princess)",
+                children: ["Perses", "Alcaeus", "Sthenelus", "Electryon", "Gorgophone"],
+                facts: [
+                    "Famous for beheading the Gorgon Medusa.",
+                    "Used winged sandals, a cap of invisibility, and a reflective shield.",
+                    "Rescued Andromeda from a sea monster.",
+                    "Founder of Mycenae."
+                ],
+                image: "https://via.placeholder.com/180/708090/FFFFFF?Text=Perseus"
+            },
+            {
+                id: "theseus",
+                name: "Theseus",
+                romanName: "Theseus",
+                title: "Hero, King of Athens, Slayer of the Minotaur",
+                father: "Poseidon or Aegeus (King of Athens)",
+                mother: "Aethra (a princess)",
+                children: ["Hippolytus"],
+                facts: [
+                    "Killed the Minotaur in the Labyrinth on Crete.",
+                    "Aided by Ariadne, who gave him a ball of thread.",
+                    "Unified Attica under Athens.",
+                    "His ship was famously preserved and repaired, leading to a philosophical paradox."
+                ],
+                image: "https://via.placeholder.com/180/4682B4/FFFFFF?Text=Theseus"
+            },
+            {
+                id: "achilles",
+                name: "Achilles",
+                romanName: "Achilles",
+                title: "Greatest Greek Warrior of the Trojan War",
+                father: "Peleus (King of the Myrmidons)",
+                mother: "Thetis (a sea nymph/goddess)",
+                children: ["Neoptolemus (Pyrrhus)"],
+                facts: [
+                    "His mother dipped him in the River Styx, making him invulnerable except for his heel.",
+                    "Key figure in Homer's Iliad.",
+                    "Killed Hector, but was later killed by Paris with an arrow to his heel.",
+                    "Known for his rage and martial prowess."
+                ],
+                image: "https://via.placeholder.com/180/CD5C5C/FFFFFF?Text=Achilles"
+            },
+            {
+                id: "odysseus",
+                name: "Odysseus",
+                romanName: "Ulysses",
+                title: "Hero, King of Ithaca, Known for his Cunning",
+                father: "Laertes (or Sisyphus in some accounts)",
+                mother: "Anticlea",
+                children: ["Telemachus", "Telegonus"],
+                facts: [
+                    "Central figure in Homer's Odyssey, detailing his 10-year journey home from Troy.",
+                    "Devised the Trojan Horse strategy.",
+                    "Famous for outwitting monsters like Polyphemus the Cyclops and Circe the sorceress.",
+                    "Known for his intelligence, resourcefulness, and endurance."
+                ],
+                image: "https://via.placeholder.com/180/5F9EA0/FFFFFF?Text=Odysseus"
+            },
+             // Primordials
+            {
+                id: "gaea",
+                name: "Gaea",
+                romanName: "Terra",
+                title: "Primordial Goddess of the Earth",
+                father: "Chaos (emerged from)",
+                mother: "Chaos (emerged from)",
+                children: ["Uranus (Sky)", "Pontus (Sea)", "The Titans", "The Cyclopes", "The Hecatonchires"],
+                facts: [
+                    "One of the first beings to emerge from Chaos.",
+                    "Mother Earth, ancestress of most gods and mortals.",
+                    "Conspired with Cronus to overthrow Uranus.",
+                    "Later, angered by Zeus, she incited the Gigantomachy (war of the Giants)."
+                ],
+                image: "https://via.placeholder.com/180/228B22/FFFFFF?Text=Gaea"
+            },
+            {
+                id: "uranus",
+                name: "Uranus",
+                romanName: "Caelus",
+                title: "Primordial God of the Sky",
+                father: "Gaea (born from her)",
+                mother: "Gaea (born from her, parthenogenetically)",
+                children: ["The Titans", "The Cyclopes", "The Hecatonchires", "Aphrodite (from his severed genitals)"],
+                facts: [
+                    "Personification of the sky, son and husband of Gaea.",
+                    "Hated his children, the Cyclopes and Hecatonchires, and imprisoned them in Tartarus (within Gaea).",
+                    "Castrated by his son Cronus at Gaea's behest.",
+                    "From his blood sprang the Giants, Erinyes (Furies), and Meliae (ash tree nymphs)."
+                ],
+                image: "https://via.placeholder.com/180/87CEFA/000000?Text=Uranus"
+            },
+            {
+                id: "cronus",
+                name: "Cronus",
+                romanName: "Saturn",
+                title: "Titan King, God of Time and Harvest",
+                father: "Uranus",
+                mother: "Gaea",
+                children: ["Hestia", "Demeter", "Hera", "Hades", "Poseidon", "Zeus", "Chiron (sometimes)"],
+                facts: [
+                    "Leader of the first generation of Titans.",
+                    "Overthrew his father Uranus. He then swallowed his own children to prevent a prophecy of being overthrown.",
+                    "Was eventually defeated by his son Zeus and imprisoned in Tartarus.",
+                    "Associated with the Golden Age, a time of peace and prosperity."
+                ],
+                image: "https://via.placeholder.com/180/F5DEB3/000000?Text=Cronus"
+            }
+            // You can add more here up to 50.
+            // e.g., Hestia/Vesta, Demeter/Ceres, Persephone/Proserpina, Eros/Cupid, Pan/Faunus,
+            // Jason, Orpheus, Medea, Cassandra, Romulus, Remus, Aeneas, etc.
+            // Titans like Rhea, Oceanus, Tethys, Hyperion, Themis, Atlas, Prometheus, Epimetheus.
+        ];
+
+        const listPanel = document.getElementById('listPanel');
+        const detailPanel = document.getElementById('detailPanel');
+        const detailPlaceholder = document.getElementById('detailPlaceholder');
+        const godContent = document.getElementById('godContent');
+
+        const godImageEl = document.getElementById('godImage');
+        const godNameEl = document.getElementById('godName');
+        const godRomanNameEl = document.getElementById('godRomanName');
+        const godTitleEl = document.getElementById('godTitle');
+        const godFatherEl = document.getElementById('godFather');
+        const godMotherEl = document.getElementById('godMother');
+        const godChildrenEl = document.getElementById('godChildren');
+        const godFactsEl = document.getElementById('godFacts');
+
+        let activeListItem = null;
+
+        function populateList() {
+            // Remove the initial h2 title because we'll add items after it
+            const listTitle = listPanel.querySelector('h2');
+            listPanel.innerHTML = ''; // Clear previous items, if any
+            listPanel.appendChild(listTitle); // Re-add title
+
+            godData.sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically
+
+            godData.forEach(god => {
+                const listItem = document.createElement('div');
+                listItem.classList.add('list-item');
+                listItem.textContent = god.name + (god.romanName && god.romanName !== god.name ? ` (${god.romanName})` : '');
+                listItem.dataset.id = god.id;
+                listItem.addEventListener('click', () => {
+                    displayGodDetails(god.id);
+                    if (activeListItem) {
+                        activeListItem.classList.remove('active');
+                    }
+                    listItem.classList.add('active');
+                    activeListItem = listItem;
+                });
+                listPanel.appendChild(listItem);
+            });
+        }
+
+        function displayGodDetails(godId) {
+            const god = godData.find(g => g.id === godId);
+            if (!god) return;
+
+            // Hide placeholder, show content
+            detailPlaceholder.style.display = 'none';
+            godContent.style.display = 'block';
+            
+            // Trigger reflow for animation restart
+            detailPanel.classList.remove('visible');
+            void detailPanel.offsetWidth; // Trigger reflow
+            detailPanel.classList.add('visible');
+
+
+            godImageEl.src = god.image;
+            godImageEl.alt = `Image of ${god.name}`;
+            godNameEl.textContent = god.name;
+            godRomanNameEl.textContent = god.romanName ? `Roman: ${god.romanName}` : '';
+            godTitleEl.textContent = god.title;
+            godFatherEl.textContent = god.father || 'N/A';
+            godMotherEl.textContent = god.mother || 'N/A';
+
+            godChildrenEl.innerHTML = '';
+            if (god.children && god.children.length > 0) {
+                if (god.children[0].toLowerCase() === "none") {
+                     const li = document.createElement('li');
+                     li.textContent = "None explicitly mentioned or virgin deity.";
+                     godChildrenEl.appendChild(li);
+                } else {
+                    god.children.forEach(child => {
+                        const li = document.createElement('li');
+                        li.textContent = child;
+                        godChildrenEl.appendChild(li);
+                    });
+                }
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'Information not available or None.';
+                godChildrenEl.appendChild(li);
+            }
+
+            godFactsEl.innerHTML = '';
+            if (god.facts && god.facts.length > 0) {
+                god.facts.forEach(fact => {
+                    const li = document.createElement('li');
+                    li.textContent = fact;
+                    godFactsEl.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'No specific facts listed.';
+                godFactsEl.appendChild(li);
+            }
+        }
+
+        // Initial population
+        document.addEventListener('DOMContentLoaded', () => {
+            populateList();
+        });
+
+    </script>
+
+</body>
+</html>
