@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greek Mythology Compendium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark-primary: #0A192F; 
+            --bg-dark-secondary: #112240; 
+            --text-primary: #CCD6F6;  
+            --text-secondary: #A8B2D1; 
+            --accent-gold: #CCA43B; 
+            --accent-teal: #64FFDA;   
+            --accent-light-blue: #5D9CEC;
+            --accent-purple: #8A63D2;
+            --accent-crimson: #E26D5C;
+            --font-heading: 'Cinzel', serif;
+            --font-body: 'Lato', sans-serif;
+            --shadow-color: rgba(2, 12, 27, 0.7);
+        }
+
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-body); margin: 0;
+            background-color: var(--bg-dark-primary); color: var(--text-primary);
+            line-height: 1.6; overflow-x: hidden;
+        }
+
+        #particle-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+        }
+        .particle {
+            position: absolute; background-color: rgba(204, 214, 246, 0.5); 
+            border-radius: 50%; animation: float 20s infinite linear; opacity: 0;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10%, 90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        header {
+            padding: 15px 5%; 
+            background: linear-gradient(180deg, rgba(10, 25, 47, 0.95) 0%, rgba(10, 25, 47, 0.7) 70%, transparent 100%);
+            text-align: center; position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+        header h1 {
+            font-family: var(--font-heading); color: var(--accent-gold);
+            font-size: clamp(1.8rem, 5vw, 2.5rem); 
+            margin: 0 0 15px 0; letter-spacing: 1px;
+        }
+        .filter-navigation-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+        .filter-button, .sub-filter-button, .back-filter-button {
+            font-family: var(--font-body); background-color: transparent;
+            color: var(--text-secondary); border: 1px solid var(--accent-teal);
+            padding: 8px 15px; 
+            border-radius: 5px; cursor: pointer;
+            font-size: 0.85rem; font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .filter-button:hover, .sub-filter-button:hover, .back-filter-button:hover {
+            background-color: rgba(100, 255, 218, 0.1); color: var(--accent-teal);
+            transform: translateY(-2px);
+        }
+        .filter-button.active, .sub-filter-button.active {
+            background-color: var(--accent-teal); color: var(--bg-dark-primary);
+            font-weight: bold; box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+        }
+        .back-filter-button {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            margin-top: 5px; 
+        }
+        .back-filter-button:hover {
+             background-color: rgba(204, 164, 59, 0.1);
+        }
+        #subFilterNavContainer {
+            margin-top: 10px; 
+        }
+
+        main { padding: 20px 5%; }
+        section { 
+            margin-bottom: 50px; opacity: 0; transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        section.visible { opacity: 1; transform: translateY(0); }
+
+        .overview-section {
+            text-align: center; padding: 30px 15px; 
+            background-color: rgba(17, 34, 64, 0.3); border-radius: 10px;
+            margin-bottom: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        .overview-section h2 {
+            font-family: var(--font-heading); color: var(--accent-gold);
+            font-size: clamp(1.6rem, 4vw, 2rem); margin-bottom: 15px;
+        }
+        .overview-section p {
+            color: var(--text-secondary); font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            max-width: 700px; margin: 0 auto 20px auto;
+        }
+        #overviewSummary {
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 10px; margin-bottom: 20px;
+        }
+        .summary-item {
+            background-color: var(--bg-dark-secondary); padding: 10px 15px;
+            border-radius: 8px; font-size: clamp(0.85rem, 2vw, 0.95rem); color: var(--text-primary);
+            border-left: 3px solid var(--accent-teal);
+        }
+        .summary-item strong { color: var(--accent-teal); }
+
+        .item-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+            gap: 20px; 
+        }
+        .item-card { 
+            background-color: var(--bg-dark-secondary); border-radius: 10px;
+            padding: 20px; text-align: center; cursor: pointer; 
+            box-shadow: 0 5px 15px var(--shadow-color);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease; /* Removed opacity & transform from here for simplicity */
+        }
+        .item-card:hover {
+            transform: translateY(-8px) scale(1.02); 
+            box-shadow: 0 10px 25px var(--shadow-color), 0 0 15px rgba(100, 255, 218, 0.3);
+            filter: brightness(1.1);
+        }
+        .item-card .emoji { font-size: clamp(2.8rem, 8vw, 3.5rem); margin-bottom: 15px; display: block; line-height: 1; }
+        .item-card h3 {
+            font-family: var(--font-heading); color: var(--accent-gold);
+            font-size: clamp(1.2rem, 3.5vw, 1.5rem); margin: 0 0 8px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        .item-card .category {
+            color: var(--accent-teal); font-size: clamp(0.75rem, 2vw, 0.85rem);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+        }
+        .item-card .title-preview {
+            color: var(--text-secondary); font-size: clamp(0.8rem, 2.2vw, 0.9rem);
+            font-style: italic; min-height: 35px; 
+        }
+
+        .modal {
+            display: none; position: fixed; z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%; overflow: auto;
+            background-color: rgba(10, 25, 47, 0.8); 
+            align-items: center; justify-content: center; padding: 15px; 
+        }
+        .modal.visible { display: flex; }
+        .modal-content {
+            background-color: var(--bg-dark-secondary); margin: auto; padding: 25px; 
+            border-radius: 10px; width: 100%; 
+            max-width: 650px; max-height: 90vh; 
+            overflow-y: auto; box-shadow: 0 10px 30px var(--shadow-color);
+            position: relative; animation: slideInModal 0.4s ease-out;
+        }
+        @keyframes slideInModal {
+            from { transform: translateY(-50px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .close-button {
+            color: var(--text-secondary); position: absolute; top: 10px; right: 20px; 
+            font-size: 1.8rem; font-weight: bold; cursor: pointer; transition: color 0.2s ease;
+        }
+        .close-button:hover { color: var(--accent-gold); }
+        .modal-emoji { font-size: clamp(4rem, 10vw, 5rem); text-align: center; margin-bottom: 15px; display: block; }
+        .modal-name {
+            font-family: var(--font-heading); color: var(--accent-gold); font-size: clamp(1.6rem, 5vw, 2.2rem);
+            text-align: center; margin-bottom: 5px;
+        }
+        .modal-roman-name {
+            color: var(--text-secondary); font-size: clamp(0.9rem, 2.5vw, 1.1rem); text-align: center;
+            font-style: italic; margin-bottom: 10px;
+        }
+        .modal-title {
+            color: var(--accent-teal); font-size: clamp(1rem, 3vw, 1.3rem); text-align: center;
+            font-weight: 500; margin-bottom: 20px;
+        }
+        .modal-info-section {
+            margin-bottom: 15px; padding: 12px; 
+            background-color: rgba(10, 25, 47, 0.5); border-radius: 8px;
+        }
+        .modal-info-section h4 {
+            font-family: var(--font-heading); color: var(--accent-light-blue);
+            font-size: clamp(1rem, 2.8vw, 1.2rem); margin-top: 0; margin-bottom: 8px;
+            padding-bottom: 5px; border-bottom: 1px solid var(--accent-light-blue);
+        }
+        .modal-info-section p, .modal-info-section ul {
+            color: var(--text-primary); font-size: clamp(0.85rem, 2.2vw, 0.95rem); margin: 5px 0;
+        }
+        .modal-info-section strong { color: var(--text-secondary); font-weight: 600;}
+        .modal-info-section ul { list-style-position: inside; padding-left: 5px; }
+        .modal-info-section ul li { margin-bottom: 3px; }
+
+        .interactive-section-base { 
+            background-color: var(--bg-dark-secondary); padding: 25px; 
+            border-radius: 10px; text-align: center; box-shadow: 0 5px 20px var(--shadow-color);
+        }
+        .interactive-section-base h2 {
+            font-family: var(--font-heading); 
+            font-size: clamp(1.6rem, 4vw, 2rem); margin-bottom: 15px;
+        }
+        .interactive-section-base p {
+            color: var(--text-secondary); margin-bottom: 20px;
+            max-width: 600px; margin-left: auto; margin-right: auto;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+        .interactive-section-base input[type="text"] {
+            background-color: var(--bg-dark-primary); color: var(--text-primary);
+            border: 1px solid; 
+            border-radius: 5px; padding: 10px; 
+            width: 80%; max-width: 350px; margin-bottom: 15px; font-size: 0.95rem;
+        }
+        .interactive-section-base button {
+            color: white; border: none;
+            padding: 10px 20px; border-radius: 5px; font-size: 0.95rem; font-weight: bold;
+            cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease;
+            margin: 5px; 
+        }
+        .interactive-section-base button:hover { transform: scale(1.05); }
+        .interactive-section-base .response-area {
+            margin-top: 20px; padding: 15px; background-color: rgba(10, 25, 47, 0.5);
+            border-radius: 8px; min-height: 40px; 
+            font-style: italic; font-size: clamp(0.95rem, 2.5vw, 1.1rem); 
+            border-left: 3px solid; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        .interactive-section-base .response-area:empty { display: none; }
+
+        .oracle-section { composes: interactive-section-base; }
+        .oracle-section h2 { color: var(--accent-purple); }
+        #oracleQuestion { border-color: var(--accent-purple); }
+        #consultOracleButton { background-color: var(--accent-purple); }
+        #consultOracleButton:hover { background-color: #714db1; }
+        #oracleResponse { border-left-color: var(--accent-gold); color: var(--accent-gold); }
+        
+        .linkup-section { composes: interactive-section-base; }
+        .linkup-section h2 { color: var(--accent-crimson); }
+        .linkup-display {
+            display: flex; justify-content: center; align-items: center;
+            gap: 15px; margin-bottom: 20px; 
+        }
+        .linkup-item {
+            background-color: var(--bg-dark-primary); padding: 15px; 
+            border-radius: 8px; width: 130px; height: 130px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 1px solid var(--accent-crimson);
+        }
+        .linkup-item .emoji { font-size: clamp(2.5rem, 7vw, 3rem); margin-bottom: 8px; }
+        .linkup-item .name { font-size: clamp(0.85rem, 2vw, 1rem); color: var(--text-primary); font-weight: bold; }
+        .linkup-vs { font-size: clamp(1.5rem, 4vw, 2rem); color: var(--accent-crimson); font-weight: bold; }
+        
+        #findLinkButton { background-color: var(--accent-crimson); }
+        #findLinkButton:hover { background-color: #c75643; }
+        #nextLinkupPairButton { background-color: var(--accent-light-blue); } 
+        #nextLinkupPairButton:hover { background-color: #4a80c2; }
+
+        #linkupResponse { border-left-color: var(--accent-light-blue); color: var(--accent-light-blue); }
+
+        footer {
+            text-align: center; padding: 25px 5%; color: var(--text-secondary); 
+            font-size: 0.85rem; border-top: 1px solid var(--bg-dark-secondary);
+        }
+        #scrollToTopButton {
+            display: none; position: fixed; bottom: 20px; right: 20px; 
+            z-index: 999; background-color: var(--accent-teal);
+            color: var(--bg-dark-primary); border: none; border-radius: 50%;
+            width: 45px; height: 45px; font-size: 1.3rem; 
+            cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            transition: background-color 0.3s, transform 0.3s;
+            align-items: center; justify-content: center; 
+        }
+        #scrollToTopButton:hover { background-color: #52d9b8; transform: scale(1.1); }
+
+        @media (max-width: 768px) {
+            .linkup-display { flex-direction: column; }
+            .linkup-vs { margin: 10px 0; transform: rotate(90deg); }
+        }
+        @media (max-width: 480px) {
+            .item-grid { grid-template-columns: 1fr; }
+            .linkup-item { width: 110px; height: 110px; } 
+            header h1 { margin-bottom: 10px; }
+            .filter-nav { gap: 5px; }
+            .filter-button, .sub-filter-button, .back-filter-button { padding: 6px 10px; font-size: 0.75rem;}
+             .interactive-section-base .response-area { font-size: 0.9rem; } 
+
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="particle-bg"></div>
+
+    <header>
+        <h1>Greek Mythology Compendium</h1>
+        <div id="filterNavigationArea" class="filter-navigation-area">
+            <nav id="mainFilterNav" class="filter-nav"></nav>
+            <div id="subFilterNavContainer" class="filter-nav" style="display: none;"></div>
+        </div>
+    </header>
+
+    <main>
+        <section id="overviewSection" class="overview-section">
+            <h2>Whispers of Antiquity</h2>
+            <p>Journey through the timeless sagas of Greek mythology. Explore the pantheon of gods, the valor of heroes, the might of titans, and the sacred sites that shaped these ancient tales.</p>
+            <div id="overviewSummary"></div>
+        </section>
+
+        <section id="itemListSection">
+            <h2 id="currentListTitle" style="font-family: var(--font-heading); color: var(--accent-gold); text-align: center; font-size: 2rem; margin-bottom: 30px;">The Pantheon & Its Legends</h2>
+            <div id="itemGrid" class="item-grid"></div>
+        </section>
+        
+        <section id="linkupSection" class="linkup-section interactive-section-base">
+            <h2>Mythical Link-Up</h2>
+            <p>Discover unexpected connections! See how two random figures or places might be linked, then try a new pair.</p>
+            <div class="linkup-display">
+                <div id="linkupItem1" class="linkup-item">
+                    <span class="emoji">❔</span>
+                    <span class="name">Entity 1</span>
+                </div>
+                <span class="linkup-vs">&harr;</span>
+                <div id="linkupItem2" class="linkup-item">
+                    <span class="emoji">❔</span>
+                    <span class="name">Entity 2</span>
+                </div>
+            </div>
+            <button id="findLinkButton">Find Their Link!</button>
+            <button id="nextLinkupPairButton">New Pair</button>
+            <div id="linkupResponse" class="response-area"></div>
+        </section>
+
+        <section id="oracleSection" class="oracle-section interactive-section-base">
+            <h2>Consult the Oracle</h2>
+            <p>Seek wisdom from the mists of Delphi. Pose your query to the Oracle, but be warned, her words are often veiled in mystery.</p>
+            <input type="text" id="oracleQuestion" placeholder="Ask your question...">
+            <button id="consultOracleButton">Seek Prophecy</button>
+            <div id="oracleResponse" class="response-area"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="currentYear"></span> Timeless Myths. All rights reserved.</p>
+    </footer>
+
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalButton">&times;</span>
+            <span id="modalEmoji" class="modal-emoji"></span>
+            <h2 id="modalName" class="modal-name"></h2>
+            <p id="modalRomanName" class="modal-roman-name"></p>
+            <h3 id="modalTitle" class="modal-title"></h3>
+            <div id="modalFamilySection" class="modal-info-section" style="display:none;">
+                <h4>Family Tree</h4>
+                <p><strong>Father:</strong> <span id="modalFather"></span></p>
+                <p><strong>Mother:</strong> <span id="modalMother"></span></p>
+                <p><strong>Notable Children:</strong></p>
+                <ul id="modalChildren"></ul>
+            </div>
+            <div class="modal-info-section">
+                <h4 id="modalFactsTitle"></h4>
+                <ul id="modalFacts"></ul>
+            </div>
+        </div>
+    </div>
+
+    <button id="scrollToTopButton" title="Go to top">&#x2B06;</button> 
+
+
+    <script>
+        const godData = [
+            // Olympian Gods
+            {
+                id: "zeus", name: "Zeus", romanName: "Jupiter", title: "King of the Gods, God of Sky and Thunder",
+                father: "Cronus", mother: "Rhea", category: "Olympian God", broadCategory: "Deity",
+                children: ["Athena", "Apollo", "Artemis", "Ares", "Hephaestus", "Hermes", "Dionysus", "Heracles", "Perseus", "Helen of Troy"],
+                facts: ["Overthrew his father Cronus and the Titans.", "Wields the thunderbolt.", "Known for his numerous affairs and offspring."],
+                image: "⚡️"
+            },
+            {
+                id: "hera", name: "Hera", romanName: "Juno", title: "Queen of the Gods, Goddess of Marriage and Family",
+                father: "Cronus", mother: "Rhea", category: "Olympian God", broadCategory: "Deity", children: ["Ares", "Hephaestus", "Hebe"],
+                facts: ["Wife and sister of Zeus.", "Known for her jealousy.", "Sacred animals: peacock, cow."],
+                image: "👑"
+            },
+            {
+                id: "poseidon", name: "Poseidon", romanName: "Neptune", title: "God of the Sea, Earthquakes, and Horses",
+                father: "Cronus", mother: "Rhea", category: "Olympian God", broadCategory: "Deity", children: ["Theseus", "Triton", "Polyphemus"],
+                facts: ["Brother of Zeus and Hades.", "Wields a trident.", "Created horses from sea foam."],
+                image: "🔱"
+            },
+            {
+                id: "hades", name: "Hades", romanName: "Pluto", title: "God of the Underworld and the Dead",
+                father: "Cronus", mother: "Rhea", category: "Olympian God", broadCategory: "Deity", children: ["Macaria", "Zagreus (Orphic)"],
+                facts: ["Rules the realm of the dead.", "Possesses a Helm of Darkness.", "Abducted Persephone."],
+                image: "💀"
+            },
+            {
+                id: "athena", name: "Athena", romanName: "Minerva", title: "Goddess of Wisdom, Warfare, and Crafts",
+                father: "Zeus", mother: "Metis", category: "Olympian God", broadCategory: "Deity", children: ["None (virgin goddess)"],
+                facts: ["Born fully grown from Zeus's head.", "Patron of Athens.", "Symbols: owl, olive tree."],
+                image: "🦉"
+            },
+            {
+                id: "apollo", name: "Apollo", romanName: "Apollo", title: "God of Music, Arts, Healing, Prophecy",
+                father: "Zeus", mother: "Leto", category: "Olympian God", broadCategory: "Deity", children: ["Asclepius", "Orpheus"],
+                facts: ["Twin brother of Artemis.", "Oracle at Delphi.", "Symbols: lyre, bow and arrow."],
+                image: "☀️"
+            },
+            {
+                id: "artemis", name: "Artemis", romanName: "Diana", title: "Goddess of the Hunt, Wilderness, Childbirth",
+                father: "Zeus", mother: "Leto", category: "Olympian God", broadCategory: "Deity", children: ["None (virgin goddess)"],
+                facts: ["Twin sister of Apollo.", "Protector of young girls.", "Symbols: moon, deer, bow."],
+                image: "🏹"
+            },
+            {
+                id: "ares", name: "Ares", romanName: "Mars", title: "God of War, Violence, and Bloodlust",
+                father: "Zeus", mother: "Hera", category: "Olympian God", broadCategory: "Deity", children: ["Phobos", "Deimos", "Eros (sometimes)"],
+                facts: ["Represents brutal aspects of war.", "Lover of Aphrodite.", "Symbols: spear, helmet."],
+                image: "⚔️"
+            },
+            {
+                id: "aphrodite", name: "Aphrodite", romanName: "Venus", title: "Goddess of Love, Beauty, Pleasure",
+                father: "Uranus (sea foam) or Zeus & Dione", mother: "Dione or Sea Foam", category: "Olympian God", broadCategory: "Deity", children: ["Eros", "Aeneas"],
+                facts: ["Born from sea foam.", "Married to Hephaestus.", "Symbols: dove, rose, swan."],
+                image: "💖"
+            },
+            {
+                id: "hephaestus", name: "Hephaestus", romanName: "Vulcan", title: "God of Fire, Metalworking, Craftsmen",
+                father: "Zeus and Hera (or Hera alone)", mother: "Hera", category: "Olympian God", broadCategory: "Deity", children: ["Erichthonius (sometimes)"],
+                facts: ["The only ugly, lame god.", "Crafted items for gods.", "Married to Aphrodite."],
+                image: "🔥"
+            },
+            {
+                id: "hermes", name: "Hermes", romanName: "Mercury", title: "Messenger God, God of Trade, Thieves",
+                father: "Zeus", mother: "Maia", category: "Olympian God", broadCategory: "Deity", children: ["Pan", "Hermaphroditus"],
+                facts: ["Known for speed and cunning.", "Wears winged sandals.", "Guides souls (psychopomp)."],
+                image: "🕊️"
+            },
+            {
+                id: "dionysus", name: "Dionysus", romanName: "Bacchus", title: "God of Wine, Ecstasy, Festivals, Theatre",
+                father: "Zeus", mother: "Semele", category: "Olympian God", broadCategory: "Deity", children: ["Oenopion", "Staphylus"],
+                facts: ["Born from Zeus's thigh.", "Associated with wild rituals.", "Patron of theatre."],
+                image: "🍇"
+            },
+            // Primordials
+             {
+                id: "gaea", name: "Gaea", romanName: "Terra", title: "Primordial Goddess of the Earth",
+                father: "Chaos (emerged)", mother: "Chaos (emerged)", category: "Primordial Deity", broadCategory: "Deity", children: ["Uranus", "Titans", "Cyclopes"],
+                facts: ["Mother Earth, the ancestral mother of all life.", "Conspired against Uranus with Cronus.", "Later, angered by Zeus, incited the Gigantomachy."],
+                image: "🌍"
+            },
+            {
+                id: "uranus", name: "Uranus", romanName: "Caelus", title: "Primordial God of the Sky",
+                father: "Gaea (born from)", mother: "Gaea (born from)", category: "Primordial Deity", broadCategory: "Deity", children: ["Titans", "Cyclopes", "Hecatonchires", "Aphrodite (from remains)"],
+                facts: ["Personification of the sky, son and husband of Gaea.", "Imprisoned his monstrous children in Tartarus (within Gaea).", "Castrated by Cronus; from his blood sprang Giants and Furies."],
+                image: "🌌"
+            },
+            // Titans
+            {
+                id: "cronus", name: "Cronus", romanName: "Saturn", title: "Titan King, God of Time and Harvest",
+                father: "Uranus", mother: "Gaea", category: "Titan", broadCategory: "Deity", children: ["Hestia", "Demeter", "Hera", "Hades", "Poseidon", "Zeus"],
+                facts: ["Leader of the first generation of Titans; overthrew Uranus.", "Swallowed his children to prevent a prophecy of his own downfall.", "Associated with the Golden Age; eventually defeated by Zeus."],
+                image: "⏳"
+            },
+            {
+                id: "rhea", name: "Rhea", romanName: "Ops", title: "Titaness Queen, Goddess of Motherhood and Fertility",
+                father: "Uranus", mother: "Gaea", category: "Titan", broadCategory: "Deity", children: ["Hestia", "Demeter", "Hera", "Hades", "Poseidon", "Zeus"],
+                facts: ["Sister and wife of Cronus.", "Saved her son Zeus from being swallowed by Cronus by tricking him with a stone.", "Often depicted with lions or on a chariot pulled by them."],
+                image: "🤱"
+            },
+            {
+                id: "oceanus", name: "Oceanus", romanName: "Oceanus", title: "Titan God of the World-Ocean",
+                father: "Uranus", mother: "Gaea", category: "Titan", broadCategory: "Deity", children: ["The Oceanids (sea nymphs, 3000 daughters)", "The Potamoi (river gods, 3000 sons)"],
+                facts: ["Personification of the great river believed to encircle the world.", "Did not participate in the Titanomachy against Zeus.", "Husband of Tethys."],
+                image: "🌊"
+            },
+            {
+                id: "tethys", name: "Tethys", romanName: "Tethys", title: "Titaness Goddess of Fresh Water Sources",
+                father: "Uranus", mother: "Gaea", category: "Titan", broadCategory: "Deity", children: ["The Oceanids", "The Potamoi"],
+                facts: ["Wife of Oceanus.", "Mother of all river gods and sea nymphs.", "Represented the fertile waters that nourish the earth."],
+                image: "💧"
+            },
+            {
+                id: "hyperion", name: "Hyperion", romanName: "Hyperion", title: "Titan God of Heavenly Light",
+                father: "Uranus", mother: "Gaea", category: "Titan", broadCategory: "Deity", children: ["Helios (Sun)", "Selene (Moon)", "Eos (Dawn)"],
+                facts: ["One of the four Titan brothers who held Uranus down during his castration.", "Represents light, wisdom, and watchfulness.", "Father of the celestial lights."],
+                image: "💡"
+            },
+            {
+                id: "theia", name: "Theia", romanName: "Thea", title: "Titaness Goddess of Sight and Shining Ether",
+                father: "Uranus", mother: "Gaea", category: "Titan", broadCategory: "Deity", children: ["Helios (Sun)", "Selene (Moon)", "Eos (Dawn)"],
+                facts: ["Wife of Hyperion.", "Her name means 'divine' or 'goddess'.", "Associated with the brilliance of gold, silver, and gems."],
+                image: "💎"
+            },
+             {
+                id: "coeus", name: "Coeus", romanName: "Polus", title: "Titan God of Intellect and the Axis of Heaven",
+                father: "Uranus", mother: "Gaea", category: "Titan", broadCategory: "Deity", children: ["Leto", "Asteria"],
+                facts: ["Represented rational intelligence and the pillar of the north.", "One of the four brothers who conspired against Uranus.", "Father of Leto (mother of Apollo and Artemis)."],
+                image: "🧭" 
+            },
+            {
+                id: "phoebe", name: "Phoebe", romanName: "Phoebe", title: "Titaness Goddess of Prophecy and Intellect",
+                father: "Uranus", mother: "Gaea", category: "Titan", broadCategory: "Deity", children: ["Leto", "Asteria"],
+                facts: ["Wife of Coeus.", "Associated with the Oracle of Delphi before Apollo took it over.", "Her name means 'bright' or 'shining'."],
+                image: "🗣️"
+            },
+            {
+                id: "iapetus", name: "Iapetus", romanName: "Iapetus", title: "Titan God of Mortal Lifespan, a Pillar of Heaven",
+                father: "Uranus", mother: "Gaea", category: "Titan", broadCategory: "Deity", children: ["Atlas", "Prometheus", "Epimetheus", "Menoetius"],
+                facts: ["Represented the pillar of the west; one of the four brothers who held Uranus.", "His sons were known for their rebellious nature against Zeus.", "Imprisoned in Tartarus after the Titanomachy."],
+                image: "🔗"
+            },
+            {
+                id: "prometheus", name: "Prometheus", romanName: "Prometheus", title: "Titan God of Forethought and Crafty Counsel",
+                father: "Iapetus", mother: "Clymene (or Themis)", category: "Titan", broadCategory: "Deity", children: ["Deucalion (in some myths)"],
+                facts: ["Known for his intelligence and as a champion of mankind.", "Stole fire from the gods and gave it to humans.", "Punished by Zeus: chained to a rock, an eagle ate his liver daily."],
+                image: "🔥" 
+            },
+            {
+                id: "epimetheus", name: "Epimetheus", romanName: "Epimetheus", title: "Titan God of Afterthought",
+                father: "Iapetus", mother: "Clymene (or Themis)", category: "Titan", broadCategory: "Deity", children: ["Pyrrha (with Pandora)"],
+                facts: ["Brother of Prometheus; name means 'hindsight'.", "Accepted Pandora as a gift from Zeus, despite Prometheus's warnings, thereby releasing evils into the world.", "Often seen as foolish."],
+                image: "🎁"
+            },
+            {
+                id: "atlas", name: "Atlas", romanName: "Atlas", title: "Titan Condemned to Hold Up the Sky",
+                father: "Iapetus", mother: "Clymene (or Asia)", category: "Titan", broadCategory: "Deity", children: ["Hesperides", "Pleiades", "Hyades", "Calypso"],
+                facts: ["Sided with the Titans in the Titanomachy.", "Punished by Zeus to hold the celestial spheres (or the sky) on his shoulders for eternity.", "Encountered by Heracles during his labors."],
+                image: "🏋️"
+            },
+            // Heroes & Mortals
+            {
+                id: "heracles", name: "Heracles", romanName: "Hercules", title: "Divine Hero, Strength and Courage",
+                father: "Zeus", mother: "Alcmene", category: "Greek Hero", broadCategory: "Hero & Mortal", children: ["Telephus", "Hyllus"],
+                facts: ["Famous for Twelve Labors.", "Hated by Hera.", "Achieved immortality."],
+                image: "💪"
+            },
+            {
+                id: "perseus", name: "Perseus", romanName: "Perseus", title: "Hero, Slayer of Medusa",
+                father: "Zeus", mother: "Danaë", category: "Greek Hero", broadCategory: "Hero & Mortal", children: ["Perses", "Gorgophone"],
+                facts: ["Beheaded Medusa.", "Rescued Andromeda.", "Founder of Mycenae."],
+                image: "🛡️"
+            },
+            {
+                id: "theseus", name: "Theseus", romanName: "Theseus", title: "Hero, King of Athens, Slayer of Minotaur",
+                father: "Poseidon or Aegeus", mother: "Aethra", category: "Greek Hero", broadCategory: "Hero & Mortal", children: ["Hippolytus"],
+                facts: ["Killed the Minotaur.", "Aided by Ariadne.", "Unified Attica."],
+                image: "🐂"
+            },
+            {
+                id: "achilles", name: "Achilles", romanName: "Achilles", title: "Greatest Greek Warrior of Trojan War",
+                father: "Peleus", mother: "Thetis", category: "Greek Hero", broadCategory: "Hero & Mortal", children: ["Neoptolemus"],
+                facts: ["Invulnerable except for his heel.", "Killed Hector.", "Killed by Paris."],
+                image: "👣"
+            },
+            {
+                id: "odysseus", name: "Odysseus", romanName: "Ulysses", title: "Hero, King of Ithaca, Known for Cunning",
+                father: "Laertes", mother: "Anticlea", category: "Greek Hero", broadCategory: "Hero & Mortal", children: ["Telemachus"],
+                facts: ["10-year journey home (Odyssey).", "Devised Trojan Horse.", "Outwitted monsters."],
+                image: "🗺️"
+            },
+            {
+                id: "jason", name: "Jason", romanName: "Jason", title: "Leader of the Argonauts, Seeker of the Golden Fleece",
+                father: "Aeson", mother: "Alcimede", category: "Greek Hero", broadCategory: "Hero & Mortal", children: ["Mermerus", "Pheres (with Medea)"],
+                facts: ["Led the quest for the Golden Fleece aboard the ship Argo.", "Aided by the sorceress Medea, whom he later betrayed.", "His legitimacy as king of Iolcus was usurped by Pelias."],
+                image: "🐑" 
+            },
+            {
+                id: "gilgamesh", name: "Gilgamesh", romanName: null, title: "King of Uruk, Seeker of Immortality",
+                father: "Lugalbanda (demigod king)", mother: "Ninsun (goddess)", category: "Literary Hero", broadCategory: "Hero & Mortal", children: ["Ur-Nungal (disputed)"],
+                facts: ["Protagonist of the *Epic of Gilgamesh*, a Mesopotamian poem.", "Two-thirds god, one-third man; known for his strength and early tyranny, later wisdom.", "Journeyed to find the secret of eternal life after the death of his friend Enkidu."],
+                image: "📜" 
+            },
+            {
+                id: "aeneas", name: "Aeneas", romanName: "Aeneas", title: "Trojan Hero, Ancestor of the Romans",
+                father: "Anchises", mother: "Aphrodite (Venus)", category: "Literary Hero", broadCategory: "Hero & Mortal", children: ["Ascanius (Iulus)"],
+                facts: ["A Trojan hero who survived the sack of Troy.", "His journey to Italy is chronicled in Virgil's *Aeneid*.", "Considered a progenitor of the Roman people through his son Ascanius."],
+                image: "🛡️" 
+            },
+            {
+                id: "beowulf", name: "Beowulf", romanName: null, title: "Geatish Hero, Slayer of Grendel",
+                father: "Ecgþeow", mother: "Daughter of Hrethel", category: "Literary Hero", broadCategory: "Hero & Mortal", children: ["None specified"],
+                facts: ["Hero of the Old English epic poem *Beowulf*.", "Travelled to Denmark to defeat the monster Grendel and Grendel's Mother.", "Later became king of the Geats and died fighting a dragon."],
+                image: "🐲" 
+            },
+            // Locations & Landmarks
+            {
+                id: "mount_olympus", name: "Mount Olympus", romanName: null, title: "Home of the Olympian Gods",
+                father: null, mother: null, children: [], category: "Mythical Location", broadCategory: "Location & Landmark",
+                facts: ["Highest mountain in Greece.", "Mythical dwelling of the twelve Olympians.", "Site of the gods' palaces and thrones."],
+                image: "⛰️"
+            },
+             {
+                id: "delphi", name: "Delphi", romanName: null, title: "Sanctuary of Apollo, Site of the Oracle",
+                father: null, mother: null, children: [], category: "Mythical Location", broadCategory: "Location & Landmark",
+                facts: ["Major religious sanctuary sacred to Apollo.", "Home to the Pythia, the Delphic Oracle.", "Considered the 'omphalos' (navel) or center of the world."],
+                image: "🔮"
+            },
+            {
+                id: "acropolis_athens", name: "Acropolis of Athens", romanName: null, title: "Ancient Citadel of Athens",
+                father: null, mother: null, children: [], category: "Historical Landmark", broadCategory: "Location & Landmark",
+                facts: ["Site of several ancient buildings of great architectural and historic significance, the most famous being the Parthenon.", "Dedicated primarily to its patron, the goddess Athena.", "Symbol of classical Greek spirit and civilization."],
+                image: "🏛️"
+            },
+            {
+                id: "knossos", name: "Knossos", romanName: null, title: "Palace of Minos, Labyrinthine Complex",
+                father: null, mother: null, children: [], category: "Historical Landmark", broadCategory: "Location & Landmark",
+                facts: ["Largest Bronze Age archaeological site on Crete.", "Considered Europe's oldest city.", "Associated with the myth of King Minos, the Labyrinth, and the Minotaur."],
+                image: "🌀"
+            },
+            {
+                id: "underworld_realm", name: "The Underworld", romanName: "Orcus/Inferno", title: "Realm of the Dead, Ruled by Hades",
+                father: null, mother: null, children: [], category: "Mythical Location", broadCategory: "Location & Landmark",
+                facts: ["The realm where souls went after death.", "Various regions including Elysium, Asphodel Meadows, and Tartarus.", "Guarded by Cerberus."],
+                image: "👻"
+            },
+            {
+                id: "troy_city", name: "Troy", romanName: "Ilium", title: "Legendary City of the Trojan War",
+                father: null, mother: null, children: [], category: "Legendary City", broadCategory: "Location & Landmark",
+                facts: ["Site of the legendary Trojan War (Homer's Iliad).", "Famous for the Trojan Horse stratagem.", "Archaeological site in modern-day Turkey."],
+                image: "🐴"
+            },
+            {
+                id: "atlantis", name: "Atlantis", romanName: null, title: "Legendary Lost Island Civilization",
+                father: "Poseidon (mythical founder)", mother: "Cleito (mythical queen)", category: "Legendary City", broadCategory: "Location & Landmark", children: [],
+                facts: ["Described by Plato in his dialogues *Timaeus* and *Critias*.", "A powerful naval power that sank into the ocean in a single day and night of misfortune.", "Its existence and location remain a subject of debate and fascination."],
+                image: "🌊" 
+            },
+            {
+                id: "lucian_moon", name: "The Moon (Lucian's Voyage)", romanName: null, title: "Inhabited Celestial Body in 'A True Story'",
+                father: null, mother: null, children: [], category: "Fantastical Location", broadCategory: "Location & Landmark",
+                facts: ["Visited by Lucian of Samosata in his satirical work *A True Story* (2nd century AD).", "Inhabited by strange life forms, including the Selenites ruled by King Endymion.", "One of the earliest examples of a voyage to the moon in fiction."],
+                image: "🌕"
+            },
+             {
+                id: "el_dorado", name: "El Dorado", romanName: null, title: "Legendary Lost City of Gold",
+                father: null, mother: null, children: [], category: "Legendary City", broadCategory: "Location & Landmark",
+                facts: ["A myth that originated with Spanish conquistadors about a tribal chief who covered himself in gold dust.", "Evolved into a legend of a lost city of immense wealth in South America.", "Inspired numerous expeditions but was never found."],
+                image: "💰"
+            },
+            {
+                id: "hyperborea", name: "Hyperborea", romanName: null, title: "Mythical Land Beyond the North Wind",
+                father: null, mother: null, children: [], category: "Mythical Location", broadCategory: "Location & Landmark",
+                facts: ["A land of eternal spring and happiness, where people lived extraordinarily long lives free of disease and old age.", "Located in the far north, beyond the realm of Boreas (the North Wind).", "Sacred to Apollo, who was said to spend winters there."],
+                image: "🌸" 
+            },
+            {
+                id: "ultima_thule", name: "Ultima Thule", romanName: null, title: "Farthest North, A Mythical Island",
+                father: null, mother: null, children: [], category: "Mythical Location", broadCategory: "Location & Landmark",
+                facts: ["A term used in classical literature to refer to a distant northern land, possibly Iceland, Greenland, or Norway.", "First mentioned by the Greek explorer Pytheas in the 4th century BC.", "Became a metaphor for any distant place located beyond the 'borders of the known world'."],
+                image: "🧭" 
+            }
+        ];
+
+        // DOM Elements
+        const mainFilterNav = document.getElementById('mainFilterNav');
+        const subFilterNavContainer = document.getElementById('subFilterNavContainer');
+        const filterNavigationArea = document.getElementById('filterNavigationArea');
+        let backFilterButton = null; 
+
+        const itemGrid = document.getElementById('itemGrid');
+        const currentListTitle = document.getElementById('currentListTitle');
+        const overviewSummaryEl = document.getElementById('overviewSummary');
+        
+        const detailModal = document.getElementById('detailModal');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const modalEmojiEl = document.getElementById('modalEmoji');
+        const modalNameEl = document.getElementById('modalName');
+        const modalRomanNameEl = document.getElementById('modalRomanName');
+        const modalTitleEl = document.getElementById('modalTitle');
+        const modalFamilySection = document.getElementById('modalFamilySection');
+        const modalFatherEl = document.getElementById('modalFather');
+        const modalMotherEl = document.getElementById('modalMother');
+        const modalChildrenEl = document.getElementById('modalChildren');
+        const modalFactsTitleEl = document.getElementById('modalFactsTitle');
+        const modalFactsEl = document.getElementById('modalFacts');
+
+        const consultOracleButton = document.getElementById('consultOracleButton');
+        const oracleResponseEl = document.getElementById('oracleResponse');
+        const oracleQuestionInput = document.getElementById('oracleQuestion');
+        
+        const linkupItem1Emoji = document.querySelector('#linkupItem1 .emoji');
+        const linkupItem1Name = document.querySelector('#linkupItem1 .name');
+        const linkupItem2Emoji = document.querySelector('#linkupItem2 .emoji');
+        const linkupItem2Name = document.querySelector('#linkupItem2 .name');
+        const findLinkButton = document.getElementById('findLinkButton');
+        const nextLinkupPairButton = document.getElementById('nextLinkupPairButton'); 
+        const linkupResponseEl = document.getElementById('linkupResponse');
+        let currentLinkupPair = [];
+
+        const particleBg = document.getElementById('particle-bg');
+        const scrollToTopButton = document.getElementById('scrollToTopButton');
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const prophecies = [
+            "The threads of fate are tightly woven; seek clarity within.",
+            "A shadow of the past may hold the key to your future.",
+            "Great change often arrives on the quietest winds.",
+            "The brightest star casts the darkest shadow; be wary of appearances.",
+            "Courage is not the absence of fear, but the triumph over it."
+        ];
+
+        const primaryFilterGroups = {
+            "All": () => true, 
+            "Deities": item => item.broadCategory === "Deity",
+            "Heroes & Mortals": item => item.broadCategory === "Hero & Mortal",
+            "Locations & Landmarks": item => item.broadCategory === "Location & Landmark"
+        };
+        let currentPrimaryFilter = "All";
+        let currentSubFilter = null;
+
+        function createMainFilterButtons() {
+            mainFilterNav.innerHTML = ''; 
+            Object.keys(primaryFilterGroups).forEach(groupName => {
+                const button = document.createElement('button');
+                button.classList.add('filter-button');
+                button.textContent = groupName;
+                button.dataset.primaryFilter = groupName;
+                if (groupName === currentPrimaryFilter && !currentSubFilter) button.classList.add('active');
+
+                button.addEventListener('click', () => {
+                    currentPrimaryFilter = groupName;
+                    currentSubFilter = null; 
+                    updateActiveFilterButtons();
+                    if (groupName === "All") {
+                        subFilterNavContainer.innerHTML = ''; 
+                        subFilterNavContainer.style.display = 'none';
+                        if (backFilterButton) backFilterButton.remove();
+                        backFilterButton = null;
+                        populateItemGrid();
+                        currentListTitle.textContent = "The Pantheon & Its Legends";
+                    } else {
+                        createSubFilterButtons(groupName);
+                        const allSubFilterButton = subFilterNavContainer.querySelector(`[data-sub-filter="All ${groupName}"]`);
+                        if (allSubFilterButton) {
+                            allSubFilterButton.click(); 
+                        } else {
+                             populateItemGrid(null, groupName); 
+                        }
+                    }
+                });
+                mainFilterNav.appendChild(button);
+            });
+        }
+
+        function createSubFilterButtons(primaryGroup) {
+            subFilterNavContainer.innerHTML = ''; 
+            subFilterNavContainer.style.display = 'flex';
+
+            const relevantCategories = [...new Set(
+                godData
+                    .filter(item => primaryFilterGroups[primaryGroup](item))
+                    .map(item => item.category)
+            )].sort();
+
+            if (relevantCategories.length > 0) {
+                createButtonForSubFilter(`All ${primaryGroup}`, primaryGroup, () => true, true);
+
+                if (relevantCategories.length > 1) { 
+                    relevantCategories.forEach(subCategory => {
+                        createButtonForSubFilter(subCategory, primaryGroup, item => item.category === subCategory);
+                    });
+                }
+
+                if (!backFilterButton) {
+                    backFilterButton = document.createElement('button');
+                    backFilterButton.classList.add('back-filter-button');
+                    backFilterButton.textContent = '‹ Back to Main Categories';
+                    backFilterButton.addEventListener('click', () => {
+                        currentPrimaryFilter = "All";
+                        currentSubFilter = null;
+                        subFilterNavContainer.innerHTML = '';
+                        subFilterNavContainer.style.display = 'none';
+                        if (backFilterButton) backFilterButton.remove();
+                        backFilterButton = null;
+                        createMainFilterButtons(); 
+                        const allButton = mainFilterNav.querySelector('[data-primary-filter="All"]');
+                        if(allButton) allButton.click(); 
+                        currentListTitle.textContent = "The Pantheon & Its Legends";
+                    });
+                    filterNavigationArea.appendChild(backFilterButton);
+                }
+            } else { 
+                 subFilterNavContainer.style.display = 'none'; 
+                 if (backFilterButton) backFilterButton.remove(); backFilterButton = null;
+                 populateItemGrid(null, primaryGroup); 
+                 currentListTitle.textContent = `${primaryGroup}`;
+            }
+            updateActiveFilterButtons();
+        }
+        
+        function createButtonForSubFilter(label, primaryGroup, filterFn, isAllSub = false) {
+            const button = document.createElement('button');
+            button.classList.add('sub-filter-button');
+            button.textContent = label;
+            button.dataset.subFilter = label; 
+            button.dataset.primaryGroupContext = primaryGroup; 
+
+            if (isAllSub && (currentSubFilter === null || currentSubFilter === label)) {
+                 button.classList.add('active');
+            }
+
+            button.addEventListener('click', () => {
+                currentSubFilter = label;
+                currentPrimaryFilter = primaryGroup; 
+                updateActiveFilterButtons();
+                populateItemGrid(isAllSub ? null : filterFn, primaryGroup, !isAllSub);
+                currentListTitle.textContent = isAllSub ? `${primaryGroup}` : `${primaryGroup} - ${label}`;
+            });
+            subFilterNavContainer.appendChild(button);
+        }
+
+        function updateActiveFilterButtons() {
+            document.querySelectorAll('.filter-button, .sub-filter-button').forEach(btn => btn.classList.remove('active'));
+            
+            const mainActiveButton = mainFilterNav.querySelector(`[data-primary-filter="${currentPrimaryFilter}"]`);
+            if (mainActiveButton) mainActiveButton.classList.add('active');
+
+            if (currentSubFilter) {
+                const subActiveButton = subFilterNavContainer.querySelector(`[data-sub-filter="${currentSubFilter}"][data-primary-group-context="${currentPrimaryFilter}"]`);
+                if (subActiveButton) subActiveButton.classList.add('active');
+            } else if (currentPrimaryFilter !== "All") { 
+                const allSubButton = subFilterNavContainer.querySelector(`[data-sub-filter="All ${currentPrimaryFilter}"]`);
+                if (allSubButton) allSubButton.classList.add('active');
+            }
+        }
+
+        function populateItemGrid(subFilterFn = null, primaryGroupFilterName = null, useSubFilterDirectly = false) {
+            itemGrid.innerHTML = ''; 
+            let itemsToDisplay;
+
+            if (primaryGroupFilterName && primaryGroupFilterName !== "All") {
+                const primaryFilterFn = primaryFilterGroups[primaryGroupFilterName];
+                itemsToDisplay = godData.filter(primaryFilterFn);
+                if (subFilterFn && useSubFilterDirectly) { 
+                    itemsToDisplay = itemsToDisplay.filter(subFilterFn);
+                }
+            } else { 
+                itemsToDisplay = [...godData];
+            }
+
+            itemsToDisplay.sort((a, b) => a.name.localeCompare(b.name));
+
+            if (itemsToDisplay.length === 0) {
+                const noItemsMsg = document.createElement('p');
+                noItemsMsg.textContent = "No items found for this selection.";
+                noItemsMsg.style.textAlign = "center";
+                noItemsMsg.style.color = "var(--text-secondary)";
+                noItemsMsg.style.padding = "20px";
+                itemGrid.appendChild(noItemsMsg);
+                return; 
+            }
+
+            itemsToDisplay.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.classList.add('item-card');
+                card.innerHTML = `
+                    <span class="emoji">${item.image || '❔'}</span>
+                    <h3>${item.name}</h3>
+                    <p class="category">${item.category}</p>
+                    <p class="title-preview">${item.title.substring(0, 60)}${item.title.length > 60 ? '...' : ''}</p>
+                `;
+                card.addEventListener('click', () => openDetailModal(item.id));
+                itemGrid.appendChild(card);
+            });
+        }
+
+        function populateOverviewSummary() {
+            overviewSummaryEl.innerHTML = '';
+             const categoryCounts = godData.reduce((acc, item) => {
+                const key = item.broadCategory || item.category;
+                acc[key] = (acc[key] || 0) + 1;
+                return acc;
+            }, {});
+            const sortedCategories = Object.keys(categoryCounts).sort();
+            sortedCategories.forEach(category => {
+                const summaryDiv = document.createElement('div');
+                summaryDiv.classList.add('summary-item');
+                summaryDiv.innerHTML = `<strong>${category}s:</strong> ${categoryCounts[category]}`; 
+                overviewSummaryEl.appendChild(summaryDiv);
+            });
+        }
+        
+        function openDetailModal(itemId) {
+            const item = godData.find(i => i.id === itemId);
+            if (!item) return;
+            modalEmojiEl.textContent = item.image || '❔';
+            modalNameEl.textContent = item.name;
+            modalTitleEl.textContent = item.title;
+            modalRomanNameEl.style.display = (item.romanName && item.romanName !== item.name && item.category !== 'Location' && item.category !== 'Historical Landmark' && item.category !== 'Legendary City' && item.category !== 'Fantastical Location') ? 'block' : 'none';
+            modalRomanNameEl.textContent = (item.romanName && item.romanName !== item.name) ? `(Roman: ${item.romanName})` : '';
+            
+            const nonFamilyCategories = ['Location', 'Historical Landmark', 'Legendary City', 'Fantastical Location'];
+            const hasFamilyData = (item.father || item.mother || (item.children && item.children.length > 0)) && !nonFamilyCategories.includes(item.category);
+
+            modalFamilySection.style.display = hasFamilyData ? 'block' : 'none';
+            if (hasFamilyData) {
+                modalFatherEl.textContent = item.father || 'N/A';
+                modalMotherEl.textContent = item.mother || 'N/A';
+                modalChildrenEl.innerHTML = '';
+                if (item.children && item.children.length > 0) {
+                    item.children.forEach(child => {
+                        const li = document.createElement('li'); li.textContent = child; modalChildrenEl.appendChild(li);
+                    });
+                } else { modalChildrenEl.innerHTML = '<li>None listed.</li>'; }
+            }
+            modalFactsTitleEl.textContent = nonFamilyCategories.includes(item.category) ? "Details & Significance" : "Facts & Myths";
+            modalFactsEl.innerHTML = '';
+            if (item.facts && item.facts.length > 0) {
+                item.facts.forEach(fact => {
+                    const li = document.createElement('li'); li.textContent = fact; modalFactsEl.appendChild(li);
+                });
+            } else { modalFactsEl.innerHTML = '<li>No specific details listed.</li>'; }
+            detailModal.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            detailModal.classList.remove('visible');
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleOracleConsult() {
+            if (oracleQuestionInput.value.trim() === "") {
+                oracleResponseEl.textContent = "The Oracle awaits a worthy question..."; return;
+            }
+            const randomIndex = Math.floor(Math.random() * prophecies.length);
+            oracleResponseEl.textContent = `"${prophecies[randomIndex]}"`;
+            oracleQuestionInput.value = "";
+        }
+
+        function setupLinkupDisplay() {
+            const index1 = Math.floor(Math.random() * godData.length);
+            let index2 = Math.floor(Math.random() * godData.length);
+            while (index1 === index2) { 
+                index2 = Math.floor(Math.random() * godData.length);
+            }
+            currentLinkupPair = [godData[index1], godData[index2]];
+            linkupItem1Emoji.textContent = currentLinkupPair[0].image || '❔';
+            linkupItem1Name.textContent = currentLinkupPair[0].name;
+            linkupItem2Emoji.textContent = currentLinkupPair[1].image || '❔';
+            linkupItem2Name.textContent = currentLinkupPair[1].name;
+            linkupResponseEl.textContent = ""; 
+        }
+
+        function findMythicalLink() {
+            if (currentLinkupPair.length < 2) {
+                linkupResponseEl.textContent = "Please get a new pair first by clicking 'New Pair'.";
+                return; 
+            }
+            const item1 = currentLinkupPair[0];
+            const item2 = currentLinkupPair[1];
+            let linkMessage = `Between ${item1.name} and ${item2.name}... `;
+
+            if (item1.children && item1.children.includes(item2.name)) { linkMessage += `${item1.name} is a parent of ${item2.name}.`; }
+            else if (item2.children && item2.children.includes(item1.name)) { linkMessage += `${item2.name} is a parent of ${item1.name}.`; }
+            else if (item1.father === item2.name || item1.mother === item2.name) { linkMessage += `${item2.name} is a parent of ${item1.name}.`; }
+            else if (item2.father === item1.name || item2.mother === item1.name) { linkMessage += `${item1.name} is a parent of ${item2.name}.`; }
+            else if (item1.father && item1.father === item2.father && item1.father !== null && item1.father !== "N/A") { linkMessage += `they share the same father, ${item1.father}!`; }
+            else if (item1.mother && item1.mother === item2.mother && item1.mother !== null && item1.mother !== "N/A") { linkMessage += `they share the same mother, ${item1.mother}!`; }
+            else if (item1.category === item2.category) { linkMessage += `both belong to the category of '${item1.category}s'.`; }
+            else if (item1.broadCategory && item2.broadCategory && item1.broadCategory === item2.broadCategory) {
+                 linkMessage += `both are considered '${item1.broadCategory}s'.`;
+            }
+            else if (item1.category === "Olympian God" && item2.name === "Mount Olympus") { linkMessage += `${item1.name} resides on ${item2.name}.`; }
+            else if (item2.category === "Olympian God" && item1.name === "Mount Olympus") { linkMessage += `${item2.name} resides on ${item1.name}.`; }
+            else if ((item1.name === "Apollo" || item2.name === "Apollo") && (item1.name === "Delphi" || item2.name === "Delphi")) { linkMessage += `Apollo's famed Oracle was at Delphi.`; }
+            else if ((item1.name === "Hades" || item2.name === "Hades") && (item1.id === "underworld_realm" || item2.id === "underworld_realm")) { linkMessage += `Hades rules The Underworld.`; }
+            else { linkMessage += "they are both fascinating figures from ancient tales and legends!"; }
+            
+            linkupResponseEl.textContent = linkMessage;
+        }
+        
+        let generalObserver;
+        function observeSections() {
+            if (generalObserver) { generalObserver.disconnect(); }
+            generalObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        if (entry.target.tagName.toLowerCase() === 'section') { 
+                           generalObserver.unobserve(entry.target); 
+                        }
+                    }
+                });
+            }, { threshold: 0.1 }); 
+            document.querySelectorAll('section').forEach(el => { 
+                if(el) generalObserver.observe(el);
+            });
+        }
+
+        function createParticles() {
+            const numParticles = 50;
+            for (let i = 0; i < numParticles; i++) {
+                let particle = document.createElement('div');
+                particle.classList.add('particle');
+                let size = Math.random() * 3 + 1;
+                particle.style.width = `${size}px`; particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                particle.style.animationDuration = `${Math.random() * 15 + 10}s`;
+                if (particleBg) particleBg.appendChild(particle);
+            }
+        }
+
+        window.onscroll = function() {
+            if (scrollToTopButton) { 
+                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                    scrollToTopButton.style.display = "flex"; 
+                } else {
+                    scrollToTopButton.style.display = "none";
+                }
+            }
+        };
+        if (scrollToTopButton) { 
+            scrollToTopButton.addEventListener('click', () => {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        }
+
+        if (closeModalButton) closeModalButton.addEventListener('click', closeModal);
+        if (detailModal) detailModal.addEventListener('click', (event) => { if (event.target === detailModal) closeModal(); });
+        document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && detailModal && detailModal.classList.contains('visible')) closeModal(); });
+        
+        if (consultOracleButton) consultOracleButton.addEventListener('click', handleOracleConsult);
+        if (oracleQuestionInput) oracleQuestionInput.addEventListener('keypress', (event) => { if (event.key === 'Enter') handleOracleConsult(); });
+        
+        if (findLinkButton) findLinkButton.addEventListener('click', findMythicalLink);
+        if (nextLinkupPairButton) nextLinkupPairButton.addEventListener('click', setupLinkupDisplay);
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (mainFilterNav) createMainFilterButtons(); 
+            if (itemGrid) populateItemGrid(); 
+            if (overviewSummaryEl) populateOverviewSummary();
+            observeSections(); 
+            if (particleBg) createParticles();
+            if (linkupItem1Emoji) setupLinkupDisplay(); 
+            if(currentListTitle) currentListTitle.textContent = "The Pantheon & Its Legends";
+        });
+    </script>
+</body>
+</html>
